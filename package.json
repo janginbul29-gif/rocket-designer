@@ -1,0 +1,11 @@
+{
+  "name": "rocket-designer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "3D 드래그 조립식 로켓 설계기 (.rocket.json 내보내기/불러오기)",
+  "scripts": {
+    "test": "node tests/massBudget.test.js && node tests/deltaV.test.js && node tests/validation.test.js && node tests/rocketFile.test.js",
+    "serve": "npx serve ."
+  }
+}

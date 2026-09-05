@@ -1,0 +1,75 @@
+{
+  "formatVersion": 1,
+  "name": "팔콘 헤비 (예제)",
+  "createdAt": "2026-09-05T00:00:00Z",
+  "designer": "rocket-designer",
+  "payloadMassKg": 10000,
+  "stages": [
+    {
+      "id": "booster-left",
+      "label": "왼쪽 부스터",
+      "role": "parallel",
+      "separationOrder": 1,
+      "dryMassKg": 24500,
+      "propellantMassKg": 411000,
+      "engines": { "count": 9, "thrustSeaLevelN": 845000, "thrustVacuumN": 914000, "ispSeaLevelS": 282, "ispVacuumS": 311 },
+      "recovery": { "enabled": true, "target": "launch_site", "reservePropellantFraction": 0.05 }
+    },
+    {
+      "id": "booster-right",
+      "label": "오른쪽 부스터",
+      "role": "parallel",
+      "separationOrder": 1,
+      "dryMassKg": 24500,
+      "propellantMassKg": 411000,
+      "engines": { "count": 9, "thrustSeaLevelN": 845000, "thrustVacuumN": 914000, "ispSeaLevelS": 282, "ispVacuumS": 311 },
+      "recovery": { "enabled": true, "target": "launch_site", "reservePropellantFraction": 0.05 }
+    },
+    {
+      "id": "core",
+      "label": "중앙 코어",
+      "role": "serial",
+      "separationOrder": 2,
+      "dryMassKg": 22200,
+      "propellantMassKg": 411000,
+      "engines": { "count": 9, "thrustSeaLevelN": 845000, "thrustVacuumN": 914000, "ispSeaLevelS": 282, "ispVacuumS": 311 },
+      "throttleWhileBoosters": 0.6,
+      "recovery": { "enabled": true, "target": "drone_ship", "reservePropellantFraction": 0.05 }
+    },
+    {
+      "id": "upper",
+      "label": "상단 (2단)",
+      "role": "serial",
+      "separationOrder": 3,
+      "dryMassKg": 4470,
+      "propellantMassKg": 92670,
+      "engines": { "count": 1, "thrustSeaLevelN": 0, "thrustVacuumN": 981000, "ispSeaLevelS": 0, "ispVacuumS": 348 },
+      "recovery": { "enabled": false, "target": "launch_site", "reservePropellantFraction": 0 }
+    }
+  ],
+  "geometry": {
+    "parts": [
+      { "partId": "booster-left-legs", "type": "landing_legs", "stageId": "booster-left", "position": [-4.15, 0.75, 0], "rotation": [0, 0, 0], "size": [4.4, 1.5, 4.4] },
+      { "partId": "booster-left-engines", "type": "engine", "stageId": "booster-left", "position": [-4.15, 2.2, 0], "rotation": [0, 0, 0], "size": [3.4, 1.4, 3.4] },
+      { "partId": "booster-left-tank", "type": "tank", "stageId": "booster-left", "position": [-4.15, 23.9, 0], "rotation": [0, 0, 0], "size": [3.7, 42, 3.7] },
+      { "partId": "booster-left-attach", "type": "booster_attach", "stageId": "booster-left", "position": [-2.0, 30, 0], "rotation": [0, 0, 90], "size": [0.6, 3, 0.6] },
+
+      { "partId": "booster-right-legs", "type": "landing_legs", "stageId": "booster-right", "position": [4.15, 0.75, 0], "rotation": [0, 0, 0], "size": [4.4, 1.5, 4.4] },
+      { "partId": "booster-right-engines", "type": "engine", "stageId": "booster-right", "position": [4.15, 2.2, 0], "rotation": [0, 0, 0], "size": [3.4, 1.4, 3.4] },
+      { "partId": "booster-right-tank", "type": "tank", "stageId": "booster-right", "position": [4.15, 23.9, 0], "rotation": [0, 0, 0], "size": [3.7, 42, 3.7] },
+      { "partId": "booster-right-attach", "type": "booster_attach", "stageId": "booster-right", "position": [2.0, 30, 0], "rotation": [0, 0, 90], "size": [0.6, 3, 0.6] },
+
+      { "partId": "core-legs", "type": "landing_legs", "stageId": "core", "position": [0, 0.75, 0], "rotation": [0, 0, 0], "size": [4.4, 1.5, 4.4] },
+      { "partId": "core-engines", "type": "engine", "stageId": "core", "position": [0, 2.2, 0], "rotation": [0, 0, 0], "size": [3.4, 1.4, 3.4] },
+      { "partId": "core-tank", "type": "tank", "stageId": "core", "position": [0, 23.9, 0], "rotation": [0, 0, 0], "size": [3.7, 42, 3.7] },
+      { "partId": "core-decoupler", "type": "decoupler", "stageId": "core", "position": [0, 44.9, 0], "rotation": [0, 0, 0], "size": [3.7, 0.3, 3.7] },
+
+      { "partId": "upper-engine", "type": "engine", "stageId": "upper", "position": [0, 46.65, 0], "rotation": [0, 0, 0], "size": [1.3, 2.9, 1.3] },
+      { "partId": "upper-tank", "type": "tank", "stageId": "upper", "position": [0, 54.1, 0], "rotation": [0, 0, 0], "size": [3.7, 12, 3.7] },
+
+      { "partId": "fairing-1", "type": "fairing", "stageId": "upper", "position": [0, 66.6, 0], "rotation": [0, 0, 0], "size": [5.2, 13, 5.2] },
+      { "partId": "payload-1", "type": "payload", "stageId": "upper", "position": [0, 65, 0], "rotation": [0, 0, 0], "size": [3, 4, 3] }
+    ]
+  },
+  "summary": { "totalMassKg": 1411340, "liftoffTwr": 1.43, "totalDeltaVMps": 13651 }
+}

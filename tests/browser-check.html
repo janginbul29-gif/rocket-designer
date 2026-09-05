@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><title>rocket-designer 브라우저 검증</title></head>
+<body>
+<pre id="out">실행 중...</pre>
+<script type="module">
+  const out = document.getElementById('out');
+  const log = (...args) => { out.textContent += args.join(' ') + '\n'; console.log(...args); };
+
+  import('../src/physics/massBudget.js').then(async (massBudget) => {
+    const { totalMassKg, liftoffTwr, liftoffThrustN } = massBudget;
+    const { computeDeltaV } = await import('../src/physics/deltaV.js');
+    const { validateRocket } = await import('../src/physics/validation.js');
+    const { exportRocketToJson, parseRocketJson, RocketValidationError } = await import('../src/io/rocketFile.js');
+
+    out.textContent = '';
+    let failCount = 0;
+    const assertTrue = (cond, msg) => { if (!cond) { failCount++; log('FAIL:', msg); } else { log('OK:', msg); } };
+
+    // 예제 파일로 직접 검증
+    const res = await fetch('../examples/falcon_heavy.rocket.json');
+    const example = await res.json();
+
+    const m0 = totalMassKg(example);
+    const thrust = liftoffThrustN(example);
+    const twr = liftoffTwr(example);
+    const dv = computeDeltaV(example);
+    const val = validateRocket(example);
+
+    log('총질량 m0 =', (m0/1000).toFixed(1), 't');
+    log('발사 시 추력 =', (thrust/1000).toFixed(0), 'kN');
+    log('TWR =', twr.toFixed(3));
+    log('단별 Δv:', dv.legs.map(l=>`${l.stageId}:${l.deltaVMps.toFixed(0)}`).join(' | '));
+    log('총 Δv =', dv.totalDeltaVMps.toFixed(0), 'm/s');
+    log('검증 errors:', JSON.stringify(val.errors));
+    log('검증 warnings:', JSON.stringify(val.warnings));
+
+    assertTrue(val.errors.length === 0, '예제 파일은 치명적 오류가 없어야 함');
+    assertTrue(twr > 1 && twr < 3, 'TWR 현실적 범위');
+    assertTrue(dv.totalDeltaVMps > 8000 && dv.totalDeltaVMps < 16000, '총 Δv 현실적 범위');
+    assertTrue(dv.legs.length === 3, '구간 3개(부스터/코어/상단)');
+
+    // export/import 왕복
+    let roundTripOk = true;
+    try {
+      const json = exportRocketToJson(example);
+      const { rocket, validation } = parseRocketJson(json);
+      roundTripOk = validation.ok && rocket.payloadMassKg === example.payloadMassKg;
+    } catch (e) {
+      roundTripOk = false;
+      log('왕복 오류:', e.message);
+    }
+    assertTrue(roundTripOk, 'export -> import 왕복 성공');
+
+    // V-01 실패 케이스
+    const noPayload = JSON.parse(JSON.stringify(example));
+    noPayload.geometry.parts = noPayload.geometry.parts.filter(p=>p.type!=='payload');
+    let threw = false;
+    try { exportRocketToJson(noPayload); } catch(e){ threw = e instanceof RocketValidationError; }
+    assertTrue(threw, '탑재체 없으면 RocketValidationError');
+
+    log('');
+    log(failCount === 0 ? '=== 전체 통과 ===' : `=== ${failCount}개 실패 ===`);
+  }).catch(e => { out.textContent = '오류: ' + e.message + '\n' + e.stack; });
+</script>
+</body>
+</html>
