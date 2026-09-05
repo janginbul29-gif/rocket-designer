@@ -54,7 +54,12 @@ export function computeDeltaV(rocket) {
 
     const massBeforeBoosterSep = mass - boosterPropellant - corePropBurnedInPhase;
     const dv1 = vEff * Math.log(mass / massBeforeBoosterSep);
-    legs.push({ stageId: boosters.map((s) => s.id).join('+'), deltaVMps: dv1, note: '부스터 동시연소 구간' });
+    legs.push({
+      stageId: boosters.map((s) => s.id).join('+'),
+      label: boosters.map((s) => s.label ?? s.id).join(' + '),
+      deltaVMps: dv1,
+      note: '부스터 동시연소 구간',
+    });
 
     const boosterDryMass = sum(boosters, (s) => s.dryMassKg);
     mass = massBeforeBoosterSep - boosterDryMass; // 부스터 분리
@@ -64,7 +69,7 @@ export function computeDeltaV(rocket) {
       if (coreRemainingProp > 1e-6) {
         const massAfterCoreBurn = mass - coreRemainingProp;
         const dv2 = core.engines.ispVacuumS * G0 * Math.log(mass / massAfterCoreBurn);
-        legs.push({ stageId: core.id, deltaVMps: dv2, note: '코어 단독연소 구간' });
+        legs.push({ stageId: core.id, label: core.label ?? core.id, deltaVMps: dv2, note: '코어 단독연소 구간' });
         mass = massAfterCoreBurn;
       }
       mass -= core.dryMassKg; // 코어 분리
@@ -74,14 +79,14 @@ export function computeDeltaV(rocket) {
     for (const stage of rest) {
       const massAfterBurn = mass - stage.propellantMassKg;
       const dv = stage.engines.ispVacuumS * G0 * Math.log(mass / massAfterBurn);
-      legs.push({ stageId: stage.id, deltaVMps: dv, note: null });
+      legs.push({ stageId: stage.id, label: stage.label ?? stage.id, deltaVMps: dv, note: null });
       mass = massAfterBurn - stage.dryMassKg;
     }
   } else {
     for (const stage of serialStages) {
       const massAfterBurn = mass - stage.propellantMassKg;
       const dv = stage.engines.ispVacuumS * G0 * Math.log(mass / massAfterBurn);
-      legs.push({ stageId: stage.id, deltaVMps: dv, note: null });
+      legs.push({ stageId: stage.id, label: stage.label ?? stage.id, deltaVMps: dv, note: null });
       mass = massAfterBurn - stage.dryMassKg;
     }
   }

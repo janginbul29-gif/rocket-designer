@@ -21,5 +21,5 @@
 - [src/data/README.md](../src/data/README.md) — 부품 카탈로그 (구현 완료)
 - [src/physics/README.md](../src/physics/README.md) — 질량/추력/Δv 계산, 검증 규칙 (구현 완료)
 - [src/io/README.md](../src/io/README.md) — JSON 내보내기/불러오기 (구현 완료)
-- `src/scene/README.md` — Three.js 3D 장면 (A3 착수 후 추가 예정)
-- `src/ui/README.md` — 팔레트, 패널 UI (A3 착수 후 추가 예정)
+- [src/scene/README.md](../src/scene/README.md) — Three.js 3D 장면 (구현 완료)
+- [src/ui/README.md](../src/ui/README.md) — 조립 상태, 팔레트, 패널 UI, 내보내기/불러오기 (구현 완료)

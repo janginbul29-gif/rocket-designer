@@ -8,8 +8,9 @@ KSP처럼 3D 부품을 드래그로 조립해 다단 로켓을 설계하는 프�
 
 전체 요구사항, 폴더 구조, 구현 로드맵은 [docs/INDEX.md](docs/INDEX.md)에서 확인하세요.
 
-현재 상태: A0~A2 구현 완료 (부품 데이터, 질량/TWR/Δv 계산, 검증, JSON 내보내기/불러오기).
-3D 조립 UI(A3~A6)는 다음 작업으로 진행 예정. 진행 상태는 [docs/ROADMAP.md](docs/ROADMAP.md) 참고.
+현재 상태: A0~A6 구현 완료 — 부품 데이터, 질량/TWR/Δv 계산, 검증, JSON 내보내기/불러오기,
+3D 장면(Three.js)과 조립 UI(단 편성·병렬 부스터·회수 설정·실시간 계산 표시). 진행 상태는
+[docs/ROADMAP.md](docs/ROADMAP.md) 참고.
 
 ## 실행 방법
 
@@ -21,7 +22,10 @@ npx serve .
 python -m http.server 8080
 ```
 
-브라우저에서 `http://localhost:<포트>`로 접속합니다.
+브라우저에서 `http://localhost:<포트>`로 접속하면 조립 화면(`index.html`)이 열립니다.
+왼쪽부터 부품 목록 → 조립 패널(단/부스터/회수) → 3D 미리보기 + 실시간 계산 순서입니다.
+"팔콘 헤비 예제 불러오기" 버튼으로 [examples/falcon_heavy.rocket.json](examples/falcon_heavy.rocket.json)을
+바로 불러와 볼 수 있습니다.
 
 ## 테스트
 
