@@ -31,6 +31,7 @@ export function renderPalette(container) {
 
   container.innerHTML = `
     <h2>부품 목록</h2>
+    <p class="palette-hint">부품을 3D 장면으로 드래그해 놓으면 조립됩니다.</p>
     ${Object.entries(groups)
       .map(
         ([type, parts]) => `
@@ -39,7 +40,7 @@ export function renderPalette(container) {
         ${parts
           .map(
             (p) => `
-          <div class="palette-item">
+          <div class="palette-item" draggable="true" data-catalog-id="${p.id}" data-type="${p.type}" title="드래그해서 3D 장면에 놓기">
             <div class="palette-item-label">${p.label}</div>
             <div class="palette-item-stat">${formatStat(p)}</div>
             ${p.note ? `<div class="palette-item-note">${p.note}</div>` : ''}
@@ -50,4 +51,14 @@ export function renderPalette(container) {
       )
       .join('')}
   `;
+
+  container.querySelectorAll('.palette-item').forEach((el) => {
+    el.addEventListener('dragstart', (e) => {
+      const part = { catalogId: el.dataset.catalogId, type: el.dataset.type };
+      e.dataTransfer.setData('application/json', JSON.stringify(part));
+      e.dataTransfer.effectAllowed = 'copy';
+      el.classList.add('palette-item--dragging');
+    });
+    el.addEventListener('dragend', () => el.classList.remove('palette-item--dragging'));
+  });
 }

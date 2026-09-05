@@ -72,6 +72,70 @@ export function setBoosters(state, enabled) {
   return state;
 }
 
+/**
+ * R-02: 3D 장면의 드롭 영역(src/scene/layout.js의 zone)에 부품을 놓았을 때 상태를 갱신한다.
+ * part: { catalogId, type } (팔레트에서 드래그한 부품).
+ * 반환: 상태가 바뀌었으면 true (호출자가 다시 그려야 함), 처리할 수 없는 조합이면 false.
+ */
+export function applyPartDrop(state, zone, part) {
+  if (!zone) return false;
+
+  if (zone.kind === 'new-stage') {
+    if (part.type !== 'engine' && part.type !== 'tank') return false;
+    const stage = createDefaultStage('upper');
+    if (part.type === 'engine') stage.engineCatalogId = part.catalogId;
+    if (part.type === 'tank') stage.tankCatalogId = part.catalogId;
+    state.stages.push(stage);
+    return true;
+  }
+
+  if (zone.kind === 'booster-left' || zone.kind === 'booster-right') {
+    if (!state.boosters) setBoosters(state, true);
+    if (part.type === 'engine') state.boosters.engineCatalogId = part.catalogId;
+    else if (part.type === 'tank') state.boosters.tankCatalogId = part.catalogId;
+    else if (part.type === 'landing_legs') state.boosters.hasLegs = true;
+    else if (part.type !== 'booster_attach') return false;
+    return true;
+  }
+
+  if (zone.kind === 'stage') {
+    const stage = state.stages.find((s) => s.id === zone.stageId);
+    if (!stage) return false;
+    const isLastStage = state.stages.at(-1)?.id === zone.stageId;
+
+    switch (part.type) {
+      case 'engine':
+        stage.engineCatalogId = part.catalogId;
+        return true;
+      case 'tank':
+        stage.tankCatalogId = part.catalogId;
+        return true;
+      case 'landing_legs':
+        stage.hasLegs = true;
+        return true;
+      case 'fairing':
+        if (!isLastStage) return false; // 페어링은 맨 위 단에만
+        stage.hasFairing = true;
+        return true;
+      case 'decoupler': {
+        const idx = state.stages.findIndex((s) => s.id === zone.stageId);
+        state.stages.splice(idx + 1, 0, createDefaultStage('upper'));
+        return true;
+      }
+      case 'booster_attach':
+        if (!state.boosters) setBoosters(state, true);
+        return true;
+      case 'payload':
+        state.payloadMassKg = findPart(part.catalogId).massKg;
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  return false;
+}
+
 function clamp01(v) {
   return Math.max(0, Math.min(1, v));
 }

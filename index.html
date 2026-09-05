@@ -48,8 +48,11 @@
   .export-status--error{color:var(--bad);}
 
   /* palette */
+  .palette-hint{font-size:11px;color:var(--ink-dim);margin:-4px 0 12px;line-height:1.5;}
   .palette-group{margin-bottom:10px;}
-  .palette-item{padding:8px 10px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;margin-bottom:6px;}
+  .palette-item{padding:8px 10px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;margin-bottom:6px;cursor:grab;}
+  .palette-item:active{cursor:grabbing;}
+  .palette-item--dragging{opacity:.4;}
   .palette-item-label{font-weight:600;font-size:12.5px;}
   .palette-item-stat{font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);margin-top:3px;}
   .palette-item-note{font-size:10.5px;color:var(--accent-2);margin-top:2px;}
